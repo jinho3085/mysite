@@ -40,7 +40,7 @@
 			</ul>
 		</div>
 		<div id="footer">
-			<p>(c)opyright 2015, 2016, 2017, 2018</p>
+			<p>(c)opyright 2025</p>
 		</div>
 	</div>
 </body>
