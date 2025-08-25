@@ -14,7 +14,7 @@
 	<!--  Servlets Mappings -->
 	<servlet-mapping>
 		<servlet-name>MainServlet</servlet-name>
-		<url-pattern></url-pattern>
+		<url-pattern>/main</url-pattern>
 	</servlet-mapping>
 	
 	<!--  Welcome Files -->
