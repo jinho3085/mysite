@@ -39,5 +39,9 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+	<finalName>mysite02</finalName>
+	</build>
   
 </project>
