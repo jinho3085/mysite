@@ -8,6 +8,13 @@ import java.io.IOException;
 
 
 public class MainServlet extends HttpServlet {
+	@Override
+	public void init() throws ServletException {
+		String config = getServletConfig().getInitParameter("config");
+		System.out.println("MainServlet.init() called:" + config);
+		super.init();
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
