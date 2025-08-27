@@ -64,6 +64,33 @@ public class UserDao {
 	}	
 
 	
+	public void update(UserVo vo) {
+		int result = 0;
+		
+		try (
+			Connection conn = getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement("update user set name=?, gender=? where id=?");
+			PreparedStatement pstmt2 = conn.prepareStatement("update user set name=?, password=password(?), gender=? where id=?");
+		) {
+			if("".equals(vo.getPassword())) {
+				pstmt1.setString(1, vo.getName());
+				pstmt1.setString(2, vo.getGender());
+				pstmt1.setLong(3, vo.getId());
+				result = pstmt1.executeUpdate();
+			} else {
+				pstmt2.setString(1, vo.getName());
+				pstmt2.setString(2, vo.getPassword());
+				pstmt2.setString(3, vo.getGender());
+				pstmt2.setLong(4, vo.getId());
+				result = pstmt2.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("Error:" + e);
+		}
+		
+		return;			
+	}
+	
 	private Connection getConnection() throws SQLException {
 		Connection con = null;
 		
@@ -78,6 +105,4 @@ public class UserDao {
 		
 		return con;		
 	}
-
-
 }
