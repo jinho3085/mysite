@@ -1,9 +1,7 @@
-<%@page import="com.bit2025.mysite.vo.GuestbookVo"%>
-<%@page import="java.util.List"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt"%>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%
-	List<GuestbookVo> list = (List<GuestbookVo>)request.getAttribute("list");
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +14,7 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="guestbook">
-				<form action="<%=request.getContextPath() %>/guestbook" method="post">
+				<form action="${pageContext.request.contextPath}/guestbook" method="post">
 					<input type="hidden" name="a" value="add">
 					<table>
 						<tr>
@@ -31,33 +29,29 @@
 						</tr>
 					</table>
 				</form>
+				
 				<ul>
-					
-					<%
-						int index = 0;
-						int count = list.size();
-						
-						for(GuestbookVo vo : list) {
-					%>
-						<li>
-							<table>
-								<tr>
-									<td>[<%=count - index++%>]</td>
-									<td><%=vo.getName() %></td>
-									<td><%=vo.getRegDate() %></td>
-									<td><a href="<%=request.getContextPath() %>/guestbook?a=deleteform&id=<%=vo.getId() %>">삭제</a></td>
-								</tr>
-								<tr>
-									<td colspan=4>
-										<%=vo.getMessage().replaceAll("\n", "<br>") %>	
-									</td>
-								</tr>
-							</table>
-							<br>
-						</li>
-					<%
-						}
-					%>
+					<c:set var="count" value="${fn:length(list)}" />
+    <c:forEach items="${list}" var="vo" varStatus="status">
+        <li>
+            <table>
+                <tr>
+                    <td>[${count - status.index}]</td>
+                    <td>${vo.name}</td>
+                    <td>${vo.regDate}</td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/guestbook?a=deleteform&id=${vo.id}">삭제</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <c:out value="${fn:replace(vo.message, ' ', '<br/>')}" escapeXml="false" />
+                    </td>
+                </tr>
+            </table>
+            <br>
+        </li>
+    </c:forEach>
 				</ul>
 			</div>
 		</div>
