@@ -21,6 +21,7 @@
 	<servlet>
 		<servlet-name>MainServlet</servlet-name>
 		<servlet-class>com.bit2025.mysite.controller.MainServlet</servlet-class>
+		
 		<init-param>
 			<param-name>config</param-name>
 			<param-value>/WEB-INF/servlet-context.xml</param-value>
@@ -38,8 +39,8 @@
 	</servlet>
 	
 	<servlet>
-		<servlet-name>BoradServlet</servlet-name>
-		<servlet-class>com.bit2025.mysite.controller.BoradServlet</servlet-class>
+		<servlet-name>BoardServlet</servlet-name>
+		<servlet-class>com.bit2025.mysite.controller.BoardServlet</servlet-class>
 	</servlet>
 	
 	<!-- Common Errors -->
@@ -65,7 +66,7 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MainServlet</servlet-name>
-		<url-pattern></url-pattern>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
@@ -79,8 +80,8 @@
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>BoradServlet</servlet-name>
-		<url-pattern>/borad</url-pattern>
+		<servlet-name>BoardServlet</servlet-name>
+		<url-pattern>/board/*</url-pattern>
 	</servlet-mapping>
 
 	
