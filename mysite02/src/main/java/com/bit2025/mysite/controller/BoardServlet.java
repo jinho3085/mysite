@@ -53,6 +53,29 @@ public class BoardServlet extends HttpServlet {
 			
 			response.sendRedirect(request.getContextPath() + "/board");
 			
+		} else if ("replyform".equals(action)){
+			Long parentId = Long.valueOf(request.getParameter("id"));
+		    BoardVo parentPost = new BoardDao().findById(parentId);
+		    request.setAttribute("parentPost", parentPost);
+		    request.getRequestDispatcher("/WEB-INF/views/board/reply.jsp").forward(request, response);
+		
+		} else if ("reply".equals(action)){
+			UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
+		    if(authUser != null) {
+		        Long parentId = Long.valueOf(request.getParameter("parentId"));
+		        BoardVo parentPost = new BoardDao().findById(parentId);
+
+		        BoardVo vo = new BoardVo();
+		        vo.setTitle(request.getParameter("title"));
+		        vo.setContent(request.getParameter("content"));
+		        vo.setWriter(authUser.getName());
+		        vo.setDepth(parentPost.getDepth() + 1);
+		        vo.setParentId(parentId);
+
+		        new BoardDao().insertReply(vo);
+		    }
+		    response.sendRedirect(request.getContextPath() + "/board");
+		    
 		} else if ("view".equals(action)){
 			String idStr = request.getParameter("id");
 			if(idStr != null && !idStr.isEmpty()) {
@@ -69,6 +92,21 @@ public class BoardServlet extends HttpServlet {
 			}
 			
 			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else if ("list".equals(action)) {
+		    String serch = request.getParameter("serch"); 
+		    List<BoardVo> posts;
+
+		    if (serch == null || serch.trim().isEmpty()) {
+		        posts = dao.findAll();           
+		    } else {
+		        posts = dao.findAll(serch.trim()); 
+		    }
+
+		    request.setAttribute("posts", posts);
+		    request.setAttribute("serch", serch); 
+		    request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
+			
 			
 		} else if ("updateform".equals(action)){
 			String idStr = request.getParameter("id");

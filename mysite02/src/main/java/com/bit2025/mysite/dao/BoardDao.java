@@ -41,6 +41,43 @@ public class BoardDao {
 	    return list;
 	}
 	
+	public List<BoardVo>findAll(String serch) {
+		List<BoardVo> list = new ArrayList<>();
+		
+		String sql =
+		        "SELECT no, title, contents, writer, hit, reg_date, depth " +
+		        "FROM board " +
+		        "WHERE title LIKE ? OR contents LIKE ? OR writer LIKE ? " +
+		        "ORDER BY no DESC";
+
+		    try (Connection con = getConnection();
+		         PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+		        String like = "%" + serch + "%";
+		        pstmt.setString(1, like);
+		        pstmt.setString(2, like);
+		        pstmt.setString(3, like);
+
+		        try (ResultSet rs = pstmt.executeQuery()) {
+		            while (rs.next()) {
+		                BoardVo vo = new BoardVo();
+		                vo.setId(rs.getLong("no"));
+		                vo.setTitle(rs.getString("title"));
+		                vo.setContent(rs.getString("contents"));
+		                vo.setWriter(rs.getString("writer"));
+		                vo.setViewCount(rs.getInt("hit"));
+		                vo.setCreatedAt(rs.getTimestamp("reg_date"));
+		                vo.setDepth(rs.getInt("depth"));
+		                list.add(vo);
+		            }
+		        }
+		    } catch (SQLException e) {
+		        System.out.println("findAll(serch) 오류: " + e);
+		    }
+
+		    return list;
+		}
+	
 	public BoardVo findById(Long id) {
 		BoardVo vo = null;
 	    String sql = "SELECT no, title, contents, writer, hit, reg_date, depth from board where no=?";
@@ -88,6 +125,25 @@ public class BoardDao {
 
 	        return result;
 	    }
+	 
+	 public int insertReply(BoardVo vo) {
+		    int result = 0;
+		    String sql = "INSERT INTO board (title, contents, writer, hit, reg_date, depth, parent_id) "
+		               + "VALUES (?, ?, ?, 0, NOW(), ?, ?)";
+
+		    try (Connection conn = getConnection();
+		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		        pstmt.setString(1, vo.getTitle());
+		        pstmt.setString(2, vo.getContent());
+		        pstmt.setString(3, vo.getWriter());
+		        pstmt.setInt(4, vo.getDepth());       
+		        pstmt.setObject(5, vo.getParentId()); 
+		        result = pstmt.executeUpdate();
+		    } catch (SQLException e) {
+		        System.out.println("insertReply() 오류: " + e);
+		    }
+		    return result;
+		}
 	 
 	 public int delete(Long id) {
 		 int result = 0;

@@ -37,9 +37,10 @@
 		<!-- content -->
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="" method="post">
-					<input type="text" id="kwd" name="kwd" value="">
-					<input type="submit" value="찾기">
+				<form id="search_form" action="${pageContext.request.contextPath}/board" method="get">
+				    <input type="hidden" name="a" value="list"> 
+				    <input type="text" id="serch" name="serch" value="${param.serch}">
+				    <input type="submit" value="찾기">
 				</form>
 				
 				<!-- 게시판 테이블 -->
