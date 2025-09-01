@@ -5,12 +5,109 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
+import com.bit2025.mysite.dao.BoardDao;
+import com.bit2025.mysite.vo.BoardVo;
+import com.bit2025.mysite.vo.UserVo;
 
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
+		String action = request.getParameter("a");
+		
+		BoardDao dao = new BoardDao();
+		
+		if("writeform".equals(action)) {
+			request.getRequestDispatcher("/WEB-INF/views/board/write.jsp").forward(request, response);
+			
+		} else if ("write".equals(action)) {
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
+			
+			if (authUser != null) {
+				BoardVo vo= new BoardVo();
+				vo.setTitle(title);
+				vo.setContent(content);
+				vo.setWriter(authUser.getName());
+				dao.insert(vo);
+			}
+			
+		
+			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else if ("delete".equals(action)){
+			String idStr = request.getParameter("id");
+			UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
+			
+			if(idStr != null && !idStr.isEmpty() && authUser != null) {
+				Long id = Long.valueOf(idStr);
+				BoardVo post = dao.findById(id);
+				
+				if(post != null && authUser.getName().equals(post.getWriter())) {
+					dao.delete(id);
+				}
+			}
+			
+			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else if ("view".equals(action)){
+			String idStr = request.getParameter("id");
+			if(idStr != null && !idStr.isEmpty()) {
+				Long id = Long.valueOf(idStr);
+				dao.increaseViewCountId(id);
+				BoardVo post = dao.findById(id);
+				
+				if(post != null) {
+					request.setAttribute("post", post);
+					request.getRequestDispatcher("/WEB-INF/views/board/view.jsp").forward(request, response);
+					
+					return;
+				}
+			}
+			
+			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else if ("updateform".equals(action)){
+			String idStr = request.getParameter("id");
+			if(idStr != null && !idStr.isEmpty()) {
+				Long id = Long.valueOf(idStr);
+				BoardVo post = dao.findById(id);
+				UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
+				
+				if(post != null && authUser !=null && authUser.getName().equals(post.getWriter())) {
+					request.setAttribute("post", post);
+					request.getRequestDispatcher("/WEB-INF/views/board/modify.jsp").forward(request, response);
+					return;
+				}
+			}
+			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else if ("update".equals(action)){
+			String idStr = request.getParameter("id");
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
+			
+			if(idStr != null && !idStr.isEmpty() && authUser !=null) {
+				Long id = Long.valueOf(idStr);
+				BoardVo post = dao.findById(id);
+				
+				if(post != null && authUser.getName().equals(post.getWriter())) {
+					post.setTitle(title);
+					post.setContent(content);
+					dao.update(post);
+				}
+			}
+			response.sendRedirect(request.getContextPath() + "/board");
+			
+		} else {
+			List<BoardVo> posts = dao.findAll();
+			request.setAttribute("posts", posts);
+			request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

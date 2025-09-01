@@ -2,6 +2,7 @@
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt"%>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<c:set var="authUser" value="${sessionScope.authUser}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,37 +15,38 @@
 		<div id="header">
 			<h1>MySite</h1>
 			<ul>
-				<li><a href="">로그인</a><li>
-				<li><a href="">회원가입</a><li>
-				<li><a href="">회원정보수정</a><li>
-				<li><a href="">로그아웃</a><li>
-				<li>님 안녕하세요 ^^;</li>
+				<c:choose>
+					<c:when test="${empty authUser}">
+						<li><a href="${pageContext.request.contextPath}/user?a=loginform">로그인</a></li>
+						<li><a href="${pageContext.request.contextPath}/user?a=joinform">회원가입</a></li>
+					</c:when>
+					
+					<c:otherwise>
+						<li><a href="${pageContext.request.contextPath}/user?a=updateform">회원정보수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/user?a=logout">로그아웃</a></li>
+						<li>${authUser.name}님 안녕하세요 ^^;</li>
+					</c:otherwise>
+				</c:choose>
 			</ul>
 		</div>
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board?a=update&id=${post.id}">
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글수정</th>
 						</tr>
 						<tr>
 							<td class="label">제목</td>
-							<td><input type="text" name="title" value=""></td>
+							<td><input type="text" name="title" value="${post.title}"></td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
-							<td>
-								<textarea id="content" name="content">수정해야 할 글은 고대로 
-이렇게 textarea에 뿌려야 합니다.
-개행문자 변경도 하지마세요.
-하하하하하
-즐건 코딩 되세요~~~~</textarea>
-							</td>
+							<td><textarea name="content" rows="10" cols="60">${post.content}</textarea></td>
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="">취소</a>
+						<a href="${pageContext.request.contextPath}/board?a=view&id=${post.id}">취소</a>
 						<input type="submit" value="수정">
 					</div>
 				</form>				
@@ -52,13 +54,13 @@
 		</div>
 		<div id="navigation">
 			<ul>
-				<li><a href="">안대혁</a></li>
-				<li><a href="">방명록</a></li>
-				<li><a href="">게시판</a></li>
+				<li><a href="${pageContext.request.contextPath}/main">정진호</a></li>
+				<li><a href="${pageContext.request.contextPath}/guestbook">방명록</a></li>
+				<li><a href="${pageContext.request.contextPath}/board">게시판</a></li>
 			</ul>
 		</div>
 		<div id="footer">
-			<p>(c)opyright 2015, 2016, 2017, 2018</p>
+			<p>(c)opyright 2025</p>
 		</div>
 	</div>
 </body>

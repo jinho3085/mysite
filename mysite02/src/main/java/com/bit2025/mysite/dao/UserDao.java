@@ -99,8 +99,8 @@ public class UserDao {
 			
 			String url  = "jdbc:mariadb://192.168.0.178:3306/webdb";
 			con =  DriverManager.getConnection (url, "webdb", "webdb");
-		} catch(ClassNotFoundException ex) {
-			System.out.println("Driver Class Not Found");
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
 		}
 		
 		return con;		
