@@ -1,15 +1,24 @@
 package com.bit2025.mysite.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.util.List;
 
 import com.bit2025.mysite.dao.BoardDao;
 import com.bit2025.mysite.vo.BoardVo;
 import com.bit2025.mysite.vo.UserVo;
+
+@MultipartConfig(
+		fileSizeThreshold = 1024 * 1024, // 1MB
+	    maxFileSize = 1024 * 1024 * 10,  // 10MB
+	    maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -27,11 +36,25 @@ public class BoardServlet extends HttpServlet {
 			String content = request.getParameter("content");
 			UserVo authUser = (UserVo) request.getSession().getAttribute("authUser");
 			
+			Part filePart = request.getPart("uploadFile");
+	        String fileName = null;
+	        if (filePart != null && filePart.getSize() > 0) {
+	            fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
+	            String uploadPath = request.getServletContext().getRealPath("/uploads");
+	            
+	            java.io.File uploadDir = new java.io.File(uploadPath);
+	            if (!uploadDir.exists()) uploadDir.mkdirs();
+
+	            filePart.write(uploadPath + java.io.File.separator + fileName);
+	        }
+			
 			if (authUser != null) {
 				BoardVo vo= new BoardVo();
 				vo.setTitle(title);
 				vo.setContent(content);
 				vo.setWriter(authUser.getName());
+				vo.setFileName(fileName);
+				
 				dao.insert(vo);
 			}
 			
@@ -136,7 +159,36 @@ public class BoardServlet extends HttpServlet {
 				if(post != null && authUser.getName().equals(post.getWriter())) {
 					post.setTitle(title);
 					post.setContent(content);
-					dao.update(post);
+					
+					Part filePart = request.getPart("uploadFile");
+		            String deleteFile = request.getParameter("deleteFile");
+
+		            String uploadPath = request.getServletContext().getRealPath("/uploads");
+
+		            // 기존 파일 삭제
+		            if ("true".equals(deleteFile) && post.getFileName() != null) {
+		                java.io.File oldFile = new java.io.File(uploadPath, post.getFileName());
+		                if (oldFile.exists()) oldFile.delete();
+		                post.setFileName(null);
+		            }
+
+		            // 새 파일 업로드
+		            if (filePart != null && filePart.getSize() > 0) {
+		                String fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
+		                java.io.File uploadDir = new java.io.File(uploadPath);
+		                if (!uploadDir.exists()) uploadDir.mkdirs();
+
+		                filePart.write(uploadPath + java.io.File.separator + fileName);
+		                post.setFileName(fileName);
+
+		                // 기존 파일이 남아있으면 삭제
+		                if (post.getFileName() != null && !"true".equals(deleteFile)) {
+		                    java.io.File oldFile = new java.io.File(uploadPath, post.getFileName());
+		                    if (oldFile.exists()) oldFile.delete();
+		                }
+		            }
+		            
+						dao.update(post);
 				}
 			}
 			response.sendRedirect(request.getContextPath() + "/board");

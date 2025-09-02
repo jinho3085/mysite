@@ -14,7 +14,7 @@ public class BoardDao {
 	
 	public List<BoardVo>findAll() {
 		List<BoardVo> list = new ArrayList<>();
-	    String sql = "SELECT no, title, contents, writer, hit, reg_date, depth "
+	    String sql = "SELECT no, title, contents, writer, fileName, hit, reg_date, depth "
 	               + "FROM board ORDER BY no DESC";
 
 	    try (
@@ -28,6 +28,7 @@ public class BoardDao {
 	            vo.setTitle(rs.getString("title"));
 	            vo.setContent(rs.getString("contents"));
 	            vo.setWriter(rs.getString("writer"));
+	            vo.setFileName(rs.getString("fileName"));
 	            vo.setViewCount(rs.getInt("hit"));
 	            vo.setCreatedAt(rs.getTimestamp("reg_date"));
 	            vo.setDepth(rs.getInt("depth"));
@@ -45,7 +46,7 @@ public class BoardDao {
 		List<BoardVo> list = new ArrayList<>();
 		
 		String sql =
-		        "SELECT no, title, contents, writer, hit, reg_date, depth " +
+		        "SELECT no, title, contents, writer, fileName, hit, reg_date, depth " +
 		        "FROM board " +
 		        "WHERE title LIKE ? OR contents LIKE ? OR writer LIKE ? " +
 		        "ORDER BY no DESC";
@@ -65,6 +66,7 @@ public class BoardDao {
 		                vo.setTitle(rs.getString("title"));
 		                vo.setContent(rs.getString("contents"));
 		                vo.setWriter(rs.getString("writer"));
+		                vo.setFileName(rs.getString("fileName"));
 		                vo.setViewCount(rs.getInt("hit"));
 		                vo.setCreatedAt(rs.getTimestamp("reg_date"));
 		                vo.setDepth(rs.getInt("depth"));
@@ -80,7 +82,7 @@ public class BoardDao {
 	
 	public BoardVo findById(Long id) {
 		BoardVo vo = null;
-	    String sql = "SELECT no, title, contents, writer, hit, reg_date, depth from board where no=?";
+	    String sql = "SELECT no, title, contents, writer, fileName, hit, reg_date, depth from board where no=?";
 
 	    try (Connection con = getConnection();
 	             PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -93,6 +95,7 @@ public class BoardDao {
 	                    vo.setTitle(rs.getString("title"));
 	                    vo.setContent(rs.getString("contents"));
 	                    vo.setWriter(rs.getString("writer"));
+	                    vo.setFileName(rs.getString("fileName"));
 	                    vo.setViewCount(rs.getInt("hit"));
 	                    vo.setCreatedAt(rs.getTimestamp("reg_date"));
 	                    vo.setDepth(rs.getInt("depth"));
@@ -109,8 +112,8 @@ public class BoardDao {
 	 public int insert(BoardVo vo) {
 	        int result = 0;
 
-	        String sql = "INSERT INTO board (title, contents, writer, hit, reg_date, depth) "
-	        			 + "VALUES (?, ?, ?, 0, NOW(), 0)";
+	        String sql = "INSERT INTO board (title, contents, writer, fileName, hit, reg_date, depth) "
+	        			 + "VALUES (?, ?, ?, ?, 0, NOW(), 0)";
 
 	        try (Connection con = getConnection();
 	             PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -118,6 +121,7 @@ public class BoardDao {
 	            pstmt.setString(1, vo.getTitle());
 	            pstmt.setString(2, vo.getContent());
 	            pstmt.setString(3, vo.getWriter());
+	            pstmt.setString(4, vo.getFileName());
 	            result = pstmt.executeUpdate();
 	        } catch (SQLException e) {
 	            System.out.println("insert() 오류: " + e);
@@ -128,16 +132,17 @@ public class BoardDao {
 	 
 	 public int insertReply(BoardVo vo) {
 		    int result = 0;
-		    String sql = "INSERT INTO board (title, contents, writer, hit, reg_date, depth, parent_id) "
-		               + "VALUES (?, ?, ?, 0, NOW(), ?, ?)";
+		    String sql = "INSERT INTO board (title, contents, writer, fileName, hit, reg_date, depth, parent_id) "
+		               + "VALUES (?, ?, ?, ?, 0, NOW(), ?, ?)";
 
 		    try (Connection conn = getConnection();
 		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		        pstmt.setString(1, vo.getTitle());
 		        pstmt.setString(2, vo.getContent());
 		        pstmt.setString(3, vo.getWriter());
-		        pstmt.setInt(4, vo.getDepth());       
-		        pstmt.setObject(5, vo.getParentId()); 
+		        pstmt.setString(4, vo.getFileName());
+		        pstmt.setInt(5, vo.getDepth());       
+		        pstmt.setObject(6, vo.getParentId()); 
 		        result = pstmt.executeUpdate();
 		    } catch (SQLException e) {
 		        System.out.println("insertReply() 오류: " + e);
@@ -178,12 +183,13 @@ public class BoardDao {
 	 
 	 public int update(BoardVo vo) {
 		 int result =0;
-		 String sql = "UPDATE board SET title = ?, contents = ? where no = ?";
+		 String sql = "UPDATE board SET title = ?, contents = ?, fileName = ? where no = ?";
 		 
 		 try (Connection con = getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 		        pstmt.setString(1, vo.getTitle());
 		        pstmt.setString(2, vo.getContent());
-		        pstmt.setLong(3, vo.getId());
+		        pstmt.setString(3, vo.getFileName());
+		        pstmt.setLong(4, vo.getId());
 		        result = pstmt.executeUpdate();
 		    } catch (SQLException e) {
 		        System.out.println("update() 오류: " + e);

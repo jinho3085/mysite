@@ -57,6 +57,20 @@
                     <td class="label">내용</td>
                     <td><pre>${post.content}</pre></td>
                 </tr>
+                <tr>
+				    <td class="label">첨부파일</td>
+				    <td>
+				        <c:if test="${not empty post.fileName}">
+				            <a href="${pageContext.request.contextPath}/uploads/${post.fileName}" download>
+				                ${post.fileName}
+				            </a>
+				        </c:if>
+				        <c:if test="${empty post.fileName}">
+				            첨부파일 없음
+				        </c:if>
+				    </td>
+				</tr>
+                
             </table>
 
             <div class="bottom">

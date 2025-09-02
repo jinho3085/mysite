@@ -7,11 +7,18 @@ public class BoardVo {
 	private String title;
 	private String content;
 	private String writer;
+	private String fileName;
 	private int viewCount;
-	private Date createdAt;
 	private int depth;
+	private Date createdAt;
 	private Long parentId;
 	
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 	public Long getParentId() {
 		return parentId;
 	}
@@ -62,8 +69,11 @@ public class BoardVo {
 	}
 	@Override
 	public String toString() {
-		return "BoardVo [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer + ", viewCount="
-				+ viewCount + ", createdAt=" + createdAt + ", depth=" + depth + ", parentId=" + parentId + "]";
+		return "BoardVo [id=" + id + ", title=" + title + ", content=" + content + ", writer=" + writer + ", fileName="
+				+ fileName + ", viewCount=" + viewCount + ", depth=" + depth + ", createdAt=" + createdAt
+				+ ", parentId=" + parentId + "]";
 	}
+	
+	
 	
 }
