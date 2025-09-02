@@ -28,34 +28,26 @@ public class UserController {
 		userService.join(userVo);
 		return "redirect:/user/joinsuccess";
 	}
-	
+
 	@RequestMapping("/joinsuccess")
 	public String joinsuccess() {
 		return "user/joinsuccess";
 	}
-	
+
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public String login() {
 		return "user/login";
 	}
-	
+
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute UserVo userVo, HttpSession session) {
 		UserVo authUser = userService.getUser(userVo);
 		if(authUser == null) {
-			return "user/join";
+			return "user/login";
 		}
 		
 		session.setAttribute("authUser", authUser);
 		return "redirect:/";
-	}
-	
-	@RequestMapping("/logout")
-	public String logout(HttpSession session) {
-	    session.removeAttribute("authUser");
-	    session.invalidate();
-
-	    return "redirect:/";
 	}
 	
 }
