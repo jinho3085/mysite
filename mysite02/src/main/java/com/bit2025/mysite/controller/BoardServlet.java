@@ -25,6 +25,9 @@ public class BoardServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("a");
+		if(action == null || action.isEmpty()) {
+			action = "list";
+		}
 		
 		BoardDao dao = new BoardDao();
 		
@@ -117,19 +120,30 @@ public class BoardServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/board");
 			
 		} else if ("list".equals(action)) {
-		    String serch = request.getParameter("serch"); 
-		    List<BoardVo> posts;
+			 String serch = request.getParameter("serch"); 
+			    int pageSize = 5;
+			    int currentPage = 1;
 
-		    if (serch == null || serch.trim().isEmpty()) {
-		        posts = dao.findAll();           
-		    } else {
-		        posts = dao.findAll(serch.trim()); 
-		    }
+			    String pageParam = request.getParameter("page");
+			    if(pageParam != null && !pageParam.isEmpty()) {
+			        currentPage = Integer.parseInt(pageParam);
+			    }
 
-		    request.setAttribute("posts", posts);
-		    request.setAttribute("serch", serch); 
-		    request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
-			
+			    int totalCount = (serch == null || serch.trim().isEmpty()) ? dao.getTotalCount() : dao.getTotalCount(serch.trim());
+			    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+
+			    List<BoardVo> posts;
+			    if (serch == null || serch.trim().isEmpty()) {
+			        posts = dao.findPage(null, currentPage, pageSize);  // 검색어 없음
+			    } else {
+			        posts = dao.findPage(serch.trim(), currentPage, pageSize);
+			    }
+
+			    request.setAttribute("posts", posts);
+			    request.setAttribute("serch", serch);
+			    request.setAttribute("currentPage", currentPage);
+			    request.setAttribute("totalPage", totalPage);
+			    request.getRequestDispatcher("/WEB-INF/views/board/list.jsp").forward(request, response);
 			
 		} else if ("updateform".equals(action)){
 			String idStr = request.getParameter("id");

@@ -42,6 +42,91 @@ public class BoardDao {
 	    return list;
 	}
 	
+	public List<BoardVo> findPage(String search, int page, int pageSize) {
+	    if (page < 1) page = 1;
+	    int offset = (page - 1) * pageSize;
+	    offset = Math.max(0, offset);
+
+	    boolean hasSearch = search != null && !search.trim().isEmpty();
+	    String sql;
+	    if (hasSearch) {
+	        sql = "SELECT * FROM board WHERE title LIKE ? OR contents LIKE ? OR writer LIKE ? "
+	            + "ORDER BY no DESC LIMIT ? OFFSET ?";
+	    } else {
+	        sql = "SELECT * FROM board ORDER BY no DESC LIMIT ? OFFSET ?";
+	    }
+
+	    List<BoardVo> list = new ArrayList<>();
+
+	    try (Connection con = getConnection();
+	         PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+	        if (hasSearch) {
+	            String like = "%" + search + "%";
+	            pstmt.setString(1, like);
+	            pstmt.setString(2, like);
+	            pstmt.setString(3, like);
+	            pstmt.setInt(4, pageSize);
+	            pstmt.setInt(5, offset);
+	        } else {
+	            pstmt.setInt(1, pageSize);
+	            pstmt.setInt(2, offset);
+	        }
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                BoardVo vo = new BoardVo();
+	                vo.setId(rs.getLong("no"));
+	                vo.setTitle(rs.getString("title"));
+	                vo.setContent(rs.getString("contents"));
+	                vo.setWriter(rs.getString("writer"));
+	                vo.setFileName(rs.getString("fileName"));
+	                vo.setViewCount(rs.getInt("hit"));
+	                vo.setCreatedAt(rs.getTimestamp("reg_date"));
+	                vo.setDepth(rs.getInt("depth"));
+	                list.add(vo);
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        System.out.println("findPage() 오류: " + e);
+	    }
+
+	    return list;
+	}
+
+	public int getTotalCount(String search) {
+		boolean hasSearch = search != null && !search.trim().isEmpty();
+	    String sql;
+	    if (hasSearch) {
+	        sql = "SELECT COUNT(*) FROM board WHERE title LIKE ? OR contents LIKE ? OR writer LIKE ?";
+	    } else {
+	        sql = "SELECT COUNT(*) FROM board";
+	    }
+
+	    try (Connection con = getConnection();
+	         PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+	        if (hasSearch) {
+	            String like = "%" + search + "%";
+	            pstmt.setString(1, like);
+	            pstmt.setString(2, like);
+	            pstmt.setString(3, like);
+	        }
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt(1);
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        System.out.println("getTotalCount() 오류: " + e);
+	    }
+
+	    return 0;
+	}
+	
 	public List<BoardVo>findAll(String serch) {
 		List<BoardVo> list = new ArrayList<>();
 		
@@ -108,6 +193,53 @@ public class BoardDao {
 	    return vo;
 	}
 	
+	public int getTotalCount() {
+		int total = 0;
+	    String sql = "SELECT COUNT(*) FROM board";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement pstmt = con.prepareStatement(sql);
+	         ResultSet rs = pstmt.executeQuery()) {
+
+	        if (rs.next()) {
+	            total = rs.getInt(1);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("getTotalCount() 오류: " + e);
+	    }
+	    return total;
+	}
+
+	public List<BoardVo> findByPage(int start, int pageSize) {
+		List<BoardVo> list = new ArrayList<>();
+		String sql = "SELECT * FROM board ORDER BY no DESC LIMIT ? OFFSET ?";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, pageSize);       // 한 페이지 글 개수
+	        pstmt.setInt(2, start);          // 시작 인덱스
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                BoardVo vo = new BoardVo();
+	                vo.setId(rs.getLong("no"));
+	                vo.setTitle(rs.getString("title"));
+	                vo.setContent(rs.getString("contents"));
+	                vo.setWriter(rs.getString("writer"));
+	                vo.setFileName(rs.getString("fileName"));
+	                vo.setViewCount(rs.getInt("hit"));
+	                vo.setCreatedAt(rs.getTimestamp("reg_date"));
+	                vo.setDepth(rs.getInt("depth"));
+	                list.add(vo);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("findByPage() 오류: " + e);
+	    }
+
+	    return list;
+	}
 	
 	 public int insert(BoardVo vo) {
 	        int result = 0;

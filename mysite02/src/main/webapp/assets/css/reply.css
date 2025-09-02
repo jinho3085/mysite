@@ -1,96 +1,175 @@
 @charset "UTF-8";
-/* 전체 화면 스타일 */
-body {
-    font-family: "맑은 고딕", Arial, sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 30px;
+@import "mysite.css";
+
+/* 댓글 영역 */
+#reply { 
+    margin: 20px auto; 
+    width: 550px; 
 }
 
-/* 테이블 기본 스타일 */
-.tbl-ex {
-    width: 600px;
+/* 댓글 작성 폼 */
+.reply-form {
+    margin-top: 30px;
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #DADADA;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+}
+
+.reply-form .tbl-ex {
+    width: 100%;
     margin: 0 auto;
     border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
 }
 
-/* 테이블 제목 행 */
-.tbl-ex th {
-    background-color: #4CAF50;
-    color: white;
-    font-size: 18px;
-    padding: 12px;
+.reply-form .tbl-ex th,
+.reply-form .tbl-ex td {
+    padding: 8px;
     text-align: center;
 }
 
-/* 라벨 셀 */
-.tbl-ex td.label {
-    background-color: #f0f0f0;
-    width: 120px;
-    text-align: right;
-    padding: 10px;
+.reply-form .tbl-ex th {
+    background-color: #E9E9E9;
+    color: #4F4F4F;
     font-weight: bold;
-    border-right: 1px solid #ddd;
+    font-size: 1.1em;
+    border-bottom: 2px solid #DADADA;
 }
 
-/* 입력칸/textarea */
-.tbl-ex td input[type="text"],
-.tbl-ex td textarea {
-    width: 95%;
+.reply-form .tbl-ex td {
+    border-top: 1px dotted #DADADA;
+}
+
+.reply-form .tbl-ex td.label {
+    text-align: right;
+    font-weight: bold;
+    width: 80px;
+}
+
+.reply-form .tbl-ex input[name='reply_content'],
+.reply-form .tbl-ex textarea#reply_content {
+    width: 100%;
+    height: 100px;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #DADADA;
     border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
+    outline: none;
+    resize: none;
 }
 
-/* textarea만 조금 더 높이 */
-.tbl-ex td textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-/* 하단 버튼 영역 */
-.bottom {
-    width: 600px;
-    margin: 15px auto 0;
+/* 버튼 영역 */
+div.bottom {
+    width: 100%;
+    margin: 15px 0 0;
     text-align: right;
 }
 
-/* 버튼 공통 스타일 */
-.bottom a,
-.bottom input[type="submit"] {
-    display: inline-block;
+div.bottom a,
+div.bottom input[type="submit"] {
     padding: 8px 16px;
-    margin-left: 6px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 14px;
-    transition: background 0.2s ease;
-}
-
-/* 취소 버튼 */
-.bottom a {
-    background-color: #ccc;
-    color: #333;
-}
-
-.bottom a:hover {
-    background-color: #bbb;
-}
-
-/* 등록 버튼 */
-.bottom input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+    border: 1px solid #DADADA;
+    font-weight: bold;
+    background-color: #E9E9E9;
+    color: #4F4F4F;
     cursor: pointer;
+    text-decoration: none;
+    border-radius: 4px;
 }
 
-.bottom input[type="submit"]:hover {
-    background-color: #45a049;
+div.bottom a:hover,
+div.bottom input[type="submit"]:hover {
+    background-color: #DADADA;
+}
+
+/* 댓글 리스트 테이블 */
+.reply-list {
+    width: 100%;
+    margin: 15px auto;
+    border-collapse: collapse;
+}
+
+.reply-list .tbl-ex th,
+.reply-list .tbl-ex td {
+    padding: 8px;
+    text-align: center;
+}
+
+.reply-list .tbl-ex th {
+    background-color: #E9E9E9;
+    color: #4F4F4F;
+    font-weight: bold;
+    font-size: 1.1em;
+    border-bottom: 2px solid #DADADA;
+}
+
+.reply-list .tbl-ex td {
+    border-top: 1px dotted #DADADA;
+}
+
+.reply-list .tbl-ex td.author {
+    text-align: left;
+    font-weight: bold;
+    width: 120px;
+}
+
+.reply-list .tbl-ex td.content {
+    text-align: left;
+}
+
+.reply-list .tbl-ex td.date {
+    font-size: 12px;
+    color: #888;
+}
+
+.reply-list .tbl-ex td.actions a {
+    font-size: 12px;
+    color: #4F4F4F;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.reply-list .tbl-ex td.actions a:hover {
+    color: #f40808;
+}
+
+/* 줄무늬 효과 */
+.reply-list .tbl-ex tr.even td {
+    background-color: #F5F5F5;
+}
+
+/* 페이징 */
+div.pager {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+div.pager ul {
+    display: inline-block;
+    padding: 0;
+}
+
+div.pager ul li {
+    display: inline-block;
+    margin: 0 3px;
+    padding: 5px 8px;
+    background-color: #E9E9E9;
+    color: #4F4F4F;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+div.pager ul li.selected {
+    background-color: #79B30B;
+    color: #fff;
+}
+
+div.pager ul li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+div.pager ul li a:hover {
+    color: #f40808;
 }

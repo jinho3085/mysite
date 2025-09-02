@@ -24,7 +24,6 @@
 						<li><a href="${pageContext.request.contextPath}/user?a=loginform">로그인</a></li>
 						<li><a href="${pageContext.request.contextPath}/user?a=joinform">회원가입</a></li>
 					</c:when>
-					
 					<c:otherwise>
 						<li><a href="${pageContext.request.contextPath}/user?a=updateform">회원정보수정</a></li>
 						<li><a href="${pageContext.request.contextPath}/user?a=logout">로그아웃</a></li>
@@ -39,7 +38,7 @@
 			<div id="board">
 				<form id="search_form" action="${pageContext.request.contextPath}/board" method="get">
 				    <input type="hidden" name="a" value="list"> 
-				    <input type="text" id="serch" name="serch" value="${param.serch}">
+				    <input type="text" id="serch" name="serch" value="${serch}">
 				    <input type="submit" value="찾기">
 				</form>
 				
@@ -53,7 +52,6 @@
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>
-				<!-- 반복예시 -->	
 				<c:forEach var="post" items="${posts}">
 					<tr>
 						<td>${post.id}</td>
@@ -66,9 +64,7 @@
 						<td>${post.writer}</td>
 						<td>${post.viewCount}</td>
 						<td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-						
 						<td>
-							<!-- 삭제 버튼: 로그인 & 작성자 본인 -->
 							<c:if test="${not empty authUser and fn:escapeXml(authUser.name) == fn:escapeXml(post.writer)}">
 								<a href="${pageContext.request.contextPath}/board?a=delete&id=${post.id}"
 									class="del"
@@ -79,20 +75,41 @@
 				</c:forEach>		
 				</table>
 				
-				<!-- pager 추가 -->
+				<!-- page -->
+				<c:set var="currentPage" value="${currentPage}" />
+				<c:set var="totalPage" value="${totalPage}" />
+		
 				<div class="pager">
-					<ul>
-						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
-						<li><a href="">▶</a></li>
-					</ul>
-				</div>	
-								
-				<!-- 글쓰기 버튼: 로그인 한 사람 표시 -->				
+				    <ul>
+				        <!-- 이전 버튼 -->
+				        <c:if test="${currentPage > 1}">
+				            <li>
+				                <a href="?a=list&page=${currentPage - 1}&serch=${fn:escapeXml(serch)}">◀</a>
+				            </li>
+				        </c:if>
+				
+				        <!-- 페이지 번호 반복 -->
+				        <c:forEach var="i" begin="1" end="${totalPage}">
+				            <c:choose>
+				                <c:when test="${i == currentPage}">
+				                    <li class="selected">${i}</li>
+				                </c:when>
+				                <c:otherwise>
+									<li><a href="?a=list&page=${i}&serch=${fn:escapeXml(serch)}">${i}</a></li>
+				                </c:otherwise>
+				            </c:choose>
+				        </c:forEach>
+				
+				        <!-- 다음 버튼 -->
+				        <c:if test="${currentPage < totalPage}">
+				            <li>
+				                <a href="?a=list&page=${currentPage + 1}&serch=${fn:escapeXml(serch)}">▶</a>
+				            </li>
+				        </c:if>
+				    </ul>
+				</div>
+				
+				<!-- 글쓰기 버튼 -->
 				<div class="bottom">
 					<c:if test="${not empty authUser}">
 						<a href="${pageContext.request.contextPath}/board?a=writeform" id="new-book">글쓰기</a>
@@ -101,7 +118,7 @@
 			</div>
 		</div>
 		
-		<!-- naviagtion -->
+		<!-- navigation -->
 		<div id="navigation">
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/main">정진호</a></li>
