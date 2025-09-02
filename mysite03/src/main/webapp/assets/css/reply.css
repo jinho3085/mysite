@@ -1,0 +1,96 @@
+@charset "UTF-8";
+/* 전체 화면 스타일 */
+body {
+    font-family: "맑은 고딕", Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 30px;
+}
+
+/* 테이블 기본 스타일 */
+.tbl-ex {
+    width: 600px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 테이블 제목 행 */
+.tbl-ex th {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    text-align: center;
+}
+
+/* 라벨 셀 */
+.tbl-ex td.label {
+    background-color: #f0f0f0;
+    width: 120px;
+    text-align: right;
+    padding: 10px;
+    font-weight: bold;
+    border-right: 1px solid #ddd;
+}
+
+/* 입력칸/textarea */
+.tbl-ex td input[type="text"],
+.tbl-ex td textarea {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* textarea만 조금 더 높이 */
+.tbl-ex td textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* 하단 버튼 영역 */
+.bottom {
+    width: 600px;
+    margin: 15px auto 0;
+    text-align: right;
+}
+
+/* 버튼 공통 스타일 */
+.bottom a,
+.bottom input[type="submit"] {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-left: 6px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+/* 취소 버튼 */
+.bottom a {
+    background-color: #ccc;
+    color: #333;
+}
+
+.bottom a:hover {
+    background-color: #bbb;
+}
+
+/* 등록 버튼 */
+.bottom input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.bottom input[type="submit"]:hover {
+    background-color: #45a049;
+}
