@@ -99,7 +99,7 @@ public class UserServlet extends HttpServlet {
 			///////////////////////////
 			
 			String name = request.getParameter("name");
-			String password = request.getParameter("parameter");
+			String password = request.getParameter("password");
 			String gender = request.getParameter("gender");
 			
 			UserVo vo = new UserVo();
