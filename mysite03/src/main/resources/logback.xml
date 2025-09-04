@@ -14,7 +14,7 @@
 
 	<appender name="fileAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/mysite/logging.log</file>
+		<file>/mysite/exception.log</file>
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
@@ -23,17 +23,17 @@
 		</encoder>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<FileNamePattern>/mysite/logging.%i.log.zip</FileNamePattern>
+			<FileNamePattern>/mysite/exception.%i.log.zip</FileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>10</MaxIndex>
 		</rollingPolicy>
 		<triggeringPolicy
 			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<MaxFileSize>50KB</MaxFileSize>
+			<MaxFileSize>100MB</MaxFileSize>
 		</triggeringPolicy>
 	</appender>
 
-	<logger name="com.bit2025.mysite.repository" level="info"
+	<logger name="com.bit2025.mysite.repository" level="error"
 		additivity="false">
 		<appender-ref ref="fileAppender" />
 		<appender-ref ref="consoleAppender" />

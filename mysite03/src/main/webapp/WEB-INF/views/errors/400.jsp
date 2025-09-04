@@ -9,7 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Bad Request</h1>
+	<h1>Servlet Context (Tomcat) : Bad Request</h1>
 	<p>
 		잘못된 요청 입니다.
 	</p>

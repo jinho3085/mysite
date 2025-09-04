@@ -1,34 +1,34 @@
 package com.bit2025.mysite.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.bit2025.mysite.exception.GusetbookRepositoryException;
 import com.bit2025.mysite.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
 	
-	private static final Log logger = LogFactory.getLog(GuestbookRepository.class);
+	@Autowired
+	private DataSource dataSource;
 	
-	public List<GuestbookVo> findAll() {
+	public List<GuestbookVo> findAll() throws GusetbookRepositoryException{
 		List<GuestbookVo> result = new ArrayList<>();
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("select id, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by reg_date desc");	
 			ResultSet rs = pstmt.executeQuery();
 		) {
-			logger.info("findAll Called from Connection[" + conn + "]");
-			
 			while(rs.next()) {
 				Long id = rs.getLong(1);
 				String name = rs.getString(2);
@@ -44,7 +44,7 @@ public class GuestbookRepository {
 				result.add(vo);
 			}
 		} catch (SQLException e) {
-			logger.error(e);
+			throw new GusetbookRepositoryException(e.toString());
 		} 
 		
 		return result;
@@ -54,7 +54,7 @@ public class GuestbookRepository {
 		int count = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("insert into guestbook values(null, ?, ?, ?, now())");
 		) {
 			pstmt.setString(1, vo.getName());
@@ -63,7 +63,7 @@ public class GuestbookRepository {
 			
 			count = pstmt.executeUpdate();
 		} catch (SQLException e) {
-			logger.error(e);
+			throw new GusetbookRepositoryException(e.toString());
 		} 
 		
 		return count;		
@@ -73,7 +73,7 @@ public class GuestbookRepository {
 		int count = 0;
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id=? and password=?");
 		) {
 			pstmt.setLong(1, id);
@@ -81,24 +81,9 @@ public class GuestbookRepository {
 			
 			count = pstmt.executeUpdate();
 		} catch (SQLException e) {
-			logger.error(e);
+			throw new GusetbookRepositoryException(e.toString());
 		} 
 		
 		return count;		
-	}
-	
-	private Connection getConnection() throws SQLException{
-		Connection conn = null;
-		
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-		
-			String url = "jdbc:mariadb://192.168.0.178:3306/webdb";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			logger.error(e);
-		} 
-		
-		return conn;
 	}
 }
