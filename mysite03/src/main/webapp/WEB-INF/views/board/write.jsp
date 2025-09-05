@@ -32,38 +32,33 @@
 				</c:choose>
 			</ul>
 		</div>
-		<div id="content">
-			<div id="board">
-				<form class="board-form" method="post" 
-				      action="${pageContext.request.contextPath}/board" 
-				      enctype="multipart/form-data">
-				    <input type="hidden" name="a" value="write">
-				    <table class="tbl-ex">
-				        <tr>
-				            <th colspan="2">글쓰기</th>
-				        </tr>
-				        <tr>
-				            <td class="label">제목</td>
-				            <td><input type="text" name="title" value=""></td>
-				        </tr>
-				        <tr>
-				            <td class="label">내용</td>
-				            <td>
-				                <textarea id="content" name="content"></textarea>
-				            </td>
-				        </tr>
-				        <tr>
-				            <td class="label">첨부파일</td>
-				            <td><input type="file" name="uploadFile"></td>
-				        </tr>
-				    </table>
-				    <div class="bottom">
-				        <a href="${pageContext.request.contextPath}/board">취소</a>
-				        <input type="submit" value="등록">
-				    </div>
-				</form>
-			</div>
-		</div>
+		 <div id="content">
+        <div id="board">
+            <form class="board-form" method="post" 
+                  action="${pageContext.request.contextPath}/board/write" 
+                  enctype="multipart/form-data">
+                <table class="tbl-ex">
+                    <tr><th colspan="2">글쓰기</th></tr>
+                    <tr>
+                        <td class="label">제목</td>
+                        <td><input type="text" name="title"></td>
+                    </tr>
+                    <tr>
+                        <td class="label">내용</td>
+                        <td><textarea name="contents" rows="10" cols="60"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="label">첨부파일</td>
+                        <td><input type="file" name="uploadFile"></td>
+                    </tr>
+                </table>
+                <div class="bottom">
+                    <a href="${pageContext.request.contextPath}/board">취소</a>
+                    <input type="submit" value="등록">
+	            </div>
+	        </form>
+        </div>
+    	</div>
 		<div id="navigation">
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/main">정진호</a></li>

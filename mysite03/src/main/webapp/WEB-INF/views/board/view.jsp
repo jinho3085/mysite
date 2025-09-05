@@ -19,12 +19,12 @@
         <ul>
             <c:choose>
                 <c:when test="${empty authUser}">
-                    <li><a href="${pageContext.request.contextPath}/user?a=loginform">로그인</a></li>
-                    <li><a href="${pageContext.request.contextPath}/user?a=joinform">회원가입</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/login">로그인</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/join">회원가입</a></li>
                 </c:when>
                 <c:otherwise>
-                    <li><a href="${pageContext.request.contextPath}/user?a=updateform">회원정보수정</a></li>
-                    <li><a href="${pageContext.request.contextPath}/user?a=logout">로그아웃</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/update">회원정보수정</a></li>
+                    <li><a href="${pageContext.request.contextPath}/user/logout">로그아웃</a></li>
                     <li>${authUser.name}님 안녕하세요 ^^;</li>
                 </c:otherwise>
             </c:choose>
@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td class="label">내용</td>
-                    <td><pre>${post.content}</pre></td>
+                    <td><pre>${post.contents}</pre></td>
                 </tr>
                 <tr>
 				    <td class="label">첨부파일</td>
@@ -76,10 +76,10 @@
             <div class="bottom">
                 <a href="${pageContext.request.contextPath}/board">글목록</a>
                 <c:if test="${not empty authUser and authUser.name == post.writer}">
-                    <a href="${pageContext.request.contextPath}/board?a=updateform&id=${post.id}">글수정</a>
-                    <a href="${pageContext.request.contextPath}/board?a=delete&id=${post.id}">삭제</a>
+                    <a href="${pageContext.request.contextPath}/board/update/${post.no}">글수정</a>
+                    <a href="${pageContext.request.contextPath}/board/delete/${post.no}">삭제</a>
                 </c:if>
-                <a href="${pageContext.request.contextPath}/board?a=replyform&id=${post.id}">답글</a>
+                <a href="${pageContext.request.contextPath}/board/reply/${post.no}">답글</a>
             </div>
         </div>
     </div>

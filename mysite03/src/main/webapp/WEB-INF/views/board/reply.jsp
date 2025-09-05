@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/reply.css">
 </head>
 <body>
-	<form method="post" action="${pageContext.request.contextPath}/board?a=reply&parentId=${parentPost.id}">
+	<form method="post" action="${pageContext.request.contextPath}/board/reply/${parentPost.no}" class="reply-form">
     <table class="tbl-ex">
         <tr>
             <th colspan="2">답글쓰기</th>
@@ -21,11 +21,11 @@
         </tr>
         <tr>
             <td class="label">내용</td>
-            <td><textarea name="content" rows="10" cols="60"></textarea></td>
+            <td><textarea name="contents" rows="10" cols="60"></textarea></td>
         </tr>
     </table>
     <div class="bottom">
-        <a href="${pageContext.request.contextPath}/board?a=view&id=${parentPost.id}">취소</a>
+        <a href="${pageContext.request.contextPath}/board/view/${parentPost.no}">취소</a>
         <input type="submit" value="등록">
     </div>
 </form>

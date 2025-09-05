@@ -17,13 +17,13 @@
 			<ul>
 				<c:choose>
 					<c:when test="${empty authUser}">
-						<li><a href="${pageContext.request.contextPath}/user?a=loginform">로그인</a></li>
-						<li><a href="${pageContext.request.contextPath}/user?a=joinform">회원가입</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/login">로그인</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/join">회원가입</a></li>
 					</c:when>
 					
 					<c:otherwise>
-						<li><a href="${pageContext.request.contextPath}/user?a=updateform">회원정보수정</a></li>
-						<li><a href="${pageContext.request.contextPath}/user?a=logout">로그아웃</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/update">회원정보수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/user/logout">로그아웃</a></li>
 						<li>${authUser.name}님 안녕하세요 ^^;</li>
 					</c:otherwise>
 				</c:choose>
@@ -31,18 +31,20 @@
 		</div>
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board?a=update&id=${post.id}" enctype="multipart/form-data">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath}/board/update/${post.no}" enctype="multipart/form-data">
+					<input type="hidden" name="redirectType" value="edit">
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글수정</th>
 						</tr>
+						
 						<tr>
 							<td class="label">제목</td>
 							<td><input type="text" name="title" value="${post.title}"></td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
-							<td><textarea name="content" rows="10" cols="60">${post.content}</textarea></td>
+							<td><textarea name="contents" rows="10" cols="60">${post.contents}</textarea></td>
 						</tr>
 						<tr>
                         <td class="label">첨부파일</td>
@@ -62,7 +64,7 @@
                     </tr>
 					</table>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath}/board?a=view&id=${post.id}">취소</a>
+						<a href="${pageContext.request.contextPath}/board/view/${post.no}">취소</a>
 						<input type="submit" value="수정">
 					</div>
 				</form>				
