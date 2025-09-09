@@ -2,14 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jee="http://www.springframework.org/schema/jee"
-       xmlns:lang="http://www.springframework.org/schema/lang"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:task="http://www.springframework.org/schema/task"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
@@ -17,6 +12,12 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+	
+	<!--  aop : auto proxy -->
+	<aop:aspectj-autoproxy />
+	
+	<!--  Transaction AOP Proxy -->
+	<tx:annotation-driven />
 
 	<!-- DataSource-->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -26,9 +27,9 @@
 		<property name="password" value="webdb" />
 	</bean>
 	
-	<!-- JdbcTemplate Bean 등록 -->
-	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-	    <property name="dataSource" ref="dataSource" />
+	<!-- Transaction Manager -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<constructor-arg index="0" ref="dataSource" />
 	</bean>
 	
 	<!-- MyBatis SqlSessionFactoryBean --> 
@@ -44,7 +45,7 @@
 	
 	<context:annotation-config />
 
-	<context:component-scan base-package="com.bit2025.mysite.repository, com.bit2025.mysite.service">
+	<context:component-scan base-package="com.bit2025.mysite.repository, com.bit2025.mysite.service, com.bit2025.mysite.aspect">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />			

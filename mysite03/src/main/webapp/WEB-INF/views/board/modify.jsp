@@ -40,11 +40,16 @@
 						
 						<tr>
 							<td class="label">제목</td>
-							<td><input type="text" name="title" value="${post.title}"></td>
+							
+							<td>
+								<input type="text" name="title" value="${post.title}">
+							</td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
-							<td><textarea name="contents" rows="10" cols="60">${post.contents}</textarea></td>
+							<td>
+								<textarea name="contents" rows="10" cols="60">${post.contents}</textarea>
+							</td>
 						</tr>
 						<tr>
                         <td class="label">첨부파일</td>
@@ -56,7 +61,9 @@
                                     ${post.fileName}
                                 </a>
                                 <br>
-                                <label><input type="checkbox" name="deleteFile" value="true"> 삭제</label>
+                                <label>
+                                <input type="checkbox" name="deleteFile" value="true">삭제
+                                </label>
                             </c:if>
                             <!-- 새 파일 업로드 -->
                             <input type="file" name="uploadFile">

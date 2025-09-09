@@ -34,23 +34,26 @@
 		</div>
 		 <div id="content">
         <div id="board">
-            <form class="board-form" method="post" 
+            <form class="board-form"
                   action="${pageContext.request.contextPath}/board/write" 
-                  enctype="multipart/form-data">
+                  method="post" enctype="multipart/form-data">
                 <table class="tbl-ex">
                     <tr><th colspan="2">글쓰기</th></tr>
                     <tr>
                         <td class="label">제목</td>
-                        <td><input type="text" name="title"></td>
+                        <td><input type="text" name="title" required></td>
                     </tr>
                     <tr>
                         <td class="label">내용</td>
-                        <td><textarea name="contents" rows="10" cols="60"></textarea></td>
+                        <td><textarea name="contents" rows="10" cols="60" required></textarea></td>
                     </tr>
                     <tr>
                         <td class="label">첨부파일</td>
                         <td><input type="file" name="uploadFile"></td>
                     </tr>
+                    <!-- 작성자 자동 설정 -->
+                    <input type="hidden" na
+                    me="writer" value="${authUser.name}">
                 </table>
                 <div class="bottom">
                     <a href="${pageContext.request.contextPath}/board">취소</a>

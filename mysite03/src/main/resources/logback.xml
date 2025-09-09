@@ -34,13 +34,13 @@
 		</triggeringPolicy>
 	</appender>
 
-	<logger name="com.bit2025.mysite.repository" level="error"
+	<logger name="com.bit2025.mysite.exception" level="error"
 		additivity="false">
 		<appender-ref ref="fileAppender" />
 		<appender-ref ref="consoleAppender" />
 	</logger>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="consoleAppender" />
 	</root>
 
