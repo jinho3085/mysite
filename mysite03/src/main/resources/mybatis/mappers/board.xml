@@ -1,94 +1,148 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="board">
-
-    <!-- BoardVo에 맞춘 ResultMap -->
-    <resultMap id="boardMap" type="com.bit2025.mysite.vo.BoardVo">
-        <id property="no" column="no"/>
-        <result property="title" column="title"/>
-        <result property="contents" column="contents"/>
-        <result property="writer" column="writer"/>
-        <result property="viewCount" column="hit"/>
-        <result property="depth" column="depth"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="fileName" column="fileName"/>
-        <result property="createdAt" column="reg_date"/>
-    </resultMap>
-
-    <!-- 전체 조회 -->
-    <select id="findAll" resultMap="boardMap">
-        select * from board order by no desc
-    </select>
-
-    <!-- 단일 조회 -->
-    <select id="findById" parameterType="long" resultMap="boardMap">
-        select * from board where no = #{no}
-    </select>
-
-    <!-- 새 글 작성 -->
-    <insert id="insert" parameterType="com.bit2025.mysite.vo.BoardVo">
-        insert into board(title, contents, writer, fileName, hit, reg_date, depth)
-        values(#{title}, #{contents}, #{writer}, #{fileName}, 0, now(), 0)
+    
+    <!-- 글쓰기 -->
+	<insert id="insert" parameterType="com.bit2025.mysite.vo.BoardVo">
+        <![CDATA[
+        insert into board
+            (title, contents, writer, hit, reg_date, depth, parent_id, fileName)
+        values
+            (#{title}, #{contents}, #{writer}, 0, now(), #{depth, jdbcType=INTEGER}, #{parentId}, #{fileName})
+        ]]>
     </insert>
-
-    <!-- 답글 작성 -->
+    
+    <!-- 답글 등록 -->
     <insert id="insertReply" parameterType="com.bit2025.mysite.vo.BoardVo">
-        insert into board(title, contents, writer, fileName, hit, reg_date, depth, parent_id)
-        values(#{title}, #{contents}, #{writer}, #{fileName}, 0, now(), #{depth}, #{parentId})
-    </insert>
+        <![CDATA[
+        insert into board
+            (title, contents, writer, reg_date, depth, parent_id, fileName, group_no, order_no)
+        values
+            (#{title}, #{contents}, #{writer}, now(), #{depth}, #{parentId}, #{fileName}, #{groupNo}, #{orderNo})
+        ]]>
+    </insert>	
+    
 
-    <!-- 글 수정 -->
+    <!-- 글수정 -->
     <update id="update" parameterType="com.bit2025.mysite.vo.BoardVo">
-    update board
-    set title = #{title},
-        contents = #{contents},
-        `fileName` = #{fileName}
-    where no = #{no}
-	</update>
-
-    <!-- 조회수 증가 -->
-    <update id="increaseViewCount" parameterType="long">
-        update board set hit = hit + 1 where no=#{no}
+        <![CDATA[
+        update board
+           set title = #{title},
+               contents = #{contents},
+               fileName = #{fileName}
+         where no = #{no}
+           and writer = #{writer}
+        ]]>
     </update>
 
-    <!-- 글 삭제 -->
-    <delete id="delete" parameterType="long">
-        delete from board where no=#{no}
+    <!-- 글삭제 -->
+     <delete id="delete" parameterType="map">
+        <![CDATA[
+        delete from board
+         where no = #{id}
+           and writer = #{writer}
+        ]]>
     </delete>
 
-    <!-- 총 글 수 -->
-    <select id="getTotalCount" parameterType="string" resultType="int">
+    <!-- 글 상세 조회 -->
+     <select id="findById" parameterType="long" resultType="com.bit2025.mysite.vo.BoardVo">
+        <![CDATA[
+        select no,
+               title,
+               contents,
+               writer,
+               hit,
+               date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate,
+               depth,
+               parent_id as parentId,
+               fileName
+          from board
+         where no = #{id}
+        ]]>
+    </select>
+    
+    <!-- 글 상세 조회 (작성자 포함) -->
+    <select id="findByIdAndWriter" parameterType="map" resultType="com.bit2025.mysite.vo.BoardVo">
+        <![CDATA[
+        select no,
+               title,
+               contents,
+               writer,
+               fileName,
+               date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate
+          from board
+         where no = #{id}
+           and writer = #{writer}
+        ]]>
+    </select>  
+    
+    <!-- 페이징 + 검색 -->
+    <select id="findAllByPageAndKeword" parameterType="map" resultType="boardvo">
         <choose>
-            <when test="search != null and search != ''">
-                select count(*) from board
-                where title like concat('%', #{search}, '%')
-                   or contents like concat('%', #{search}, '%')
-                   or writer like concat('%', #{search}, '%')
+            <when test="keyword == null or keyword == ''">
+                <![CDATA[
+                select no,
+                       title,
+                       writer,
+                       user_id as userId,
+                       hit,
+                       date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate,
+                       depth,
+                       parent_id as parentId,
+                       fileName
+                  from board
+                 order by no desc
+                 limit #{startIndex}, #{size}
+                ]]>
             </when>
             <otherwise>
-                select count(*) from board
+                <![CDATA[
+                select no,
+                       title,
+                       writer,
+                       hit,
+                       date_format(reg_date, '%Y-%m-%d %p %h:%i:%s') as regDate,
+                       depth,
+                       parent_id as parentId,
+                       fileName
+                  from board
+                 where title like '%${keyword}%'
+                    or contents like '%${keyword}%'
+                    or writer like '%${keyword}%'
+                 order by no desc
+                 limit #{startIndex}, #{size}
+                ]]>
             </otherwise>
         </choose>
     </select>
 
-    <!-- 페이지 조회 -->
-    <select id="findPage" parameterType="map" resultMap="boardMap">
+    <!-- 조회수 증가 -->
+    <update id="updateHit" parameterType="long">
+        <![CDATA[
+        update board
+           set hit = hit + 1
+         where no = #{id}
+        ]]>
+    </update>
+    
+    <!-- 전체 게시글 수 -->
+    <select id="totalCount" parameterType="string" resultType="integer">
         <choose>
-            <when test="search != null and search != ''">
-                select * from board
-                where title like concat('%', #{search}, '%')
-                   or contents like concat('%', #{search}, '%')
-                   or writer like concat('%', #{search}, '%')
-                order by no desc
-                limit #{pageSize} offset #{start}
+            <when test="_parameter == null or _parameter == ''">
+                <![CDATA[
+                select count(*) from board
+                ]]>
             </when>
             <otherwise>
-                select * from board
-                order by no desc
-                limit #{pageSize} offset #{start}
+                <![CDATA[
+                select count(*)
+                  from board
+                 where title like '%${_parameter}%'
+                    or contents like '%${_parameter}%'
+                    or writer like '%${_parameter}%'
+                ]]>
             </otherwise>
         </choose>
     </select>
-
+    
 </mapper>

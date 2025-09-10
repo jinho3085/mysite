@@ -1,5 +1,6 @@
 package com.bit2025.mysite.repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,41 +16,49 @@ public class BoardRepository {
     @Autowired
     private SqlSession sqlSession;
 
-    public List<BoardVo> findAll() {
-        return sqlSession.selectList("board.findAll");
+    public int insert(BoardVo boardVo) {
+        return sqlSession.insert("board.insert", boardVo);
     }
 
-    public BoardVo findById(Long no) {
-        return sqlSession.selectOne("board.findById", no);
+    public List<BoardVo> findAllByPageAndKeword(String keyword, Integer page, Integer size) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("keyword", keyword);
+        map.put("startIndex", (page - 1) * size);
+        map.put("size", size);
+
+        return sqlSession.selectList("board.findAllByPageAndKeword", map);
     }
 
-    public int insert(BoardVo vo) {
-        return sqlSession.insert("board.insert", vo);
+    public int update(BoardVo boardVo) {
+        return sqlSession.update("board.update", boardVo);
     }
 
-    public int insertReply(BoardVo vo) {
-        return sqlSession.insert("board.insertReply", vo);
+    // userId → writer로 변경
+    public int delete(Long id, String writer) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("writer", writer);
+
+        return sqlSession.delete("board.delete", map);
     }
 
-    public int update(BoardVo vo) {
-        return sqlSession.update("board.update", vo);
+    public BoardVo findById(Long id) {
+        return sqlSession.selectOne("board.findById", id);
     }
 
-    public int delete(Long no) {
-        return sqlSession.delete("board.delete", no);
+    // userId → writer로 변경
+    public BoardVo findByIdAndWriter(Long id, String writer) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("writer", writer);
+        return sqlSession.selectOne("board.findByIdAndWriter", map);
     }
 
-    public int increaseViewCount(Long no) {
-        return sqlSession.update("board.increaseViewCount", no);
+    public int updateHit(Long id) {
+        return sqlSession.update("board.updateHit", id);
     }
 
-    public int getTotalCount(String search) {
-        return sqlSession.selectOne("board.getTotalCount", search);
-    }
-
-    public List<BoardVo> findPage(String search, int start, int pageSize) {
-    	if(search == null) search = "";
-        return sqlSession.selectList("board.findPage", 
-                Map.of("search", search, "start", start, "pageSize", pageSize));
+    public int getTotalCount(String keyword) {
+        return sqlSession.selectOne("board.totalCount", keyword);
     }
 }
