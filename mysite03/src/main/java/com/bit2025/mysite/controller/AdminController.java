@@ -15,6 +15,10 @@ public class AdminController {
 		return "admin/main";
 	}
 	
+	public String mainUpdate() {
+		return "";
+	}
+	
 	@RequestMapping("/guestbook")
 	public String guestbook() {
 		return "admin/guestbook";

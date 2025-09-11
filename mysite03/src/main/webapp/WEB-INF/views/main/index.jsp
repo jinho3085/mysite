@@ -15,7 +15,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-					<img id="profile" src="${pageContext.request.contextPath }/assets/images/T1_logo.png" style="width:150px">
+					<img id="profile" src="${pageContext.request.contextPath }/upload-images/default.png" style="width:150px">
 					<h2>안녕하세요. 정진호의  mysite에 오신 것을 환영합니다.</h2>
 					<p>
 						이 사이트는  웹 프로그램밍 실습과제 예제 사이트입니다.<br>
