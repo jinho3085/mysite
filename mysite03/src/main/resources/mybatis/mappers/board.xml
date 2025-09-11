@@ -16,9 +16,9 @@
     <insert id="insertReply" parameterType="com.bit2025.mysite.vo.BoardVo">
         <![CDATA[
         insert into board
-            (title, contents, writer, reg_date, depth, parent_id, fileName, group_no, order_no)
+            (title, contents, writer, reg_date, depth, parent_id, fileName)
         values
-            (#{title}, #{contents}, #{writer}, now(), #{depth}, #{parentId}, #{fileName}, #{groupNo}, #{orderNo})
+            (#{title}, #{contents}, #{writer}, now(), #{depth}, #{parentId}, #{fileName})
         ]]>
     </insert>	
     
