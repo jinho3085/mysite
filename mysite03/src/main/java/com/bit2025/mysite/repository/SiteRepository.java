@@ -17,4 +17,8 @@ public class SiteRepository {
 		return sqlSession.selectOne("site.findById", id);
 	}
 
+	public int update(SiteVo vo) {
+		return sqlSession.update("site.update", vo);
+	}
+
 }
