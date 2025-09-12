@@ -9,16 +9,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bit2025.mysite.service.GuestbookService;
+import com.bit2025.mysite.service.SiteService;
 import com.bit2025.mysite.vo.GuestbookVo;
+import com.bit2025.mysite.vo.SiteVo;
 
 @Controller
 @RequestMapping("/guestbook")
 public class GuestbookController {
 	@Autowired
+	private SiteService siteService;
+	
+	@Autowired
 	private GuestbookService guestbookService;
 	
 	@RequestMapping("")
 	public String list(Model model) {
+		SiteVo siteVo = siteService.getSite();		
+		
+		model.addAttribute("siteVo", siteVo);
 		model.addAttribute("list", guestbookService.getMessageList());
 		return "guestbook/list";
 	}

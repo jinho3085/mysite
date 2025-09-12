@@ -55,16 +55,24 @@
 			<mvc:mapping path="/user/auth" />
 			<bean class="com.bit2025.mysite.security.LoginInterceptor" />
 		</mvc:interceptor>
+		
 		<mvc:interceptor>
 			<mvc:mapping path="/user/logout" />
 			<bean class="com.bit2025.mysite.security.LogoutInterceptor" />
 		</mvc:interceptor>
+		
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/assets/**" />
 			<mvc:exclude-mapping path="/user/auth" />
 			<mvc:exclude-mapping path="/user/logout" />
 			<bean class="com.bit2025.mysite.security.AuthInterceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/assets/**" />
+			<bean class="com.bit2025.mysite.interceptor.SiteInterceptor" />
 		</mvc:interceptor>
 
 	</mvc:interceptors>
@@ -79,6 +87,7 @@
 	
 	<!-- mvc url-resource mapping -->
 	<mvc:resources mapping="/upload-images/**" location="file:/mysite-uploads/" />
+	<mvc:resources mapping="/assets/**" location="/assets/" />
 	
 	<!-- Multipart Resolver -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
