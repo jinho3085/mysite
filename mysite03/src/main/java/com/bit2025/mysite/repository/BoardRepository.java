@@ -33,7 +33,6 @@ public class BoardRepository {
         return sqlSession.update("board.update", boardVo);
     }
 
-    // userId → writer로 변경
     public int delete(Long id, String writer) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
@@ -46,7 +45,6 @@ public class BoardRepository {
         return sqlSession.selectOne("board.findById", id);
     }
 
-    // userId → writer로 변경
     public BoardVo findByIdAndWriter(Long id, String writer) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
