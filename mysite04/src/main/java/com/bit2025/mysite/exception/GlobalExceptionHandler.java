@@ -3,13 +3,13 @@ package com.bit2025.mysite.exception;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bit2025.mysite.dto.JsonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,8 +37,7 @@ public class GlobalExceptionHandler {
 		
 		//3. json 응답
 		if(accept.matches(".*application/json.*")) {
-			Map map = Map.of("result", "fail", "message", errors.toString());
-			String jsonString = new ObjectMapper().writeValueAsString(map);
+			String jsonString = new ObjectMapper().writeValueAsString(JsonResult.fail(errors.toString()));
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json; charset=utf-8");
