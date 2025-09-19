@@ -2,11 +2,13 @@ package com.bit2025.mysite.initializer;
 
 import java.util.ResourceBundle;
 
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.bit2025.mysite.config.AppConfig;
 import com.bit2025.mysite.config.WebConfig;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration.Dynamic;
 
@@ -26,7 +28,12 @@ public class MySiteWebApplicationInitializer extends AbstractAnnotationConfigDis
 	protected String[] getServletMappings() {
 		return new String[] {"/"};
 	}
-
+	
+	@Override
+	protected Filter[] getServletFilters() {
+		return new Filter[] {new DelegatingFilterProxy("springSecurityFilterChain")};
+	}
+	
 	@Override
 	protected void customizeRegistration(Dynamic registration) {
 		ResourceBundle bundle = ResourceBundle.getBundle("com.bit2025.mysite.config.web.fileupload");
@@ -37,5 +44,4 @@ public class MySiteWebApplicationInitializer extends AbstractAnnotationConfigDis
 		MultipartConfigElement multipartConfig = new MultipartConfigElement(null, maxFileSize, maxRequestSize, fileSizeThreshold);
 		registration.setMultipartConfig(multipartConfig);
 	}
-	
 }

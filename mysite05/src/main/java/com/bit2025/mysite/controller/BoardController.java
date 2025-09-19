@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bit2025.mysite.security.Auth;
 import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.BoardService;
 import com.bit2025.mysite.vo.BoardVo;
@@ -47,14 +46,12 @@ public class BoardController {
     }
     
     // 글쓰기 화면
-    @Auth
 	@RequestMapping(value="/write", method=RequestMethod.GET)
 	public String write() {
 		return "board/write";
 	}
     
     // 글쓰기 처리
-    @Auth
     @RequestMapping(value="/write", method=RequestMethod.POST)    
     public String write(
     	@AuthUser UserVo authUser,
@@ -76,7 +73,6 @@ public class BoardController {
     }
     
     // 글 수정 화면
-    @Auth
     @RequestMapping("/modify/{no}")	
 	public String modify(@AuthUser UserVo authUser, @PathVariable("no") Long no, Model model) {
     	BoardVo boardVo = boardService.getContents(no);
@@ -85,7 +81,6 @@ public class BoardController {
 	}
     
     // 글 수정 처리
-    @Auth
     @RequestMapping(value="/modify", method=RequestMethod.POST)    
     public String modify(
     	@AuthUser UserVo authUser, BoardVo boardVo,
@@ -101,7 +96,6 @@ public class BoardController {
     }
     
     // 글 삭제
-    @Auth
     @RequestMapping("/delete/{no}")
     public String delete(
         @AuthUser UserVo authUser, 
@@ -114,7 +108,6 @@ public class BoardController {
     }
     
     // 답글 작성 화면
-    @Auth
     @RequestMapping(value="/reply/{no}")	
 	public String reply(@PathVariable("no") Long no, Model model) {
 		BoardVo parent = boardService.getContents(no);
