@@ -4,6 +4,7 @@ package com.bit2025.mysite.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bit2025.mysite.security.AuthUser;
 import com.bit2025.mysite.service.BoardService;
 import com.bit2025.mysite.vo.BoardVo;
 import com.bit2025.mysite.vo.UserVo;
@@ -54,14 +54,14 @@ public class BoardController {
     // 글쓰기 처리
     @RequestMapping(value="/write", method=RequestMethod.POST)    
     public String write(
-    	@AuthUser UserVo authUser,
+    	Authentication authentication,
     	@ModelAttribute BoardVo boardVo,
         @RequestParam(value="p", required=true, defaultValue="1") Integer page,
         @RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
         
-    	boardVo.setWriter(authUser.getName());
+    	boardVo.setWriter(((UserVo)authentication.getPrincipal()).getName());
     	
-    	boardVo.setUserId(authUser.getId());
+    	boardVo.setUserId(((UserVo)authentication.getPrincipal()).getId());
     	
     	if (boardVo.getDepth() == null) { // 새 글이면 depth 0
     	    boardVo.setDepth(0);
@@ -74,7 +74,8 @@ public class BoardController {
     
     // 글 수정 화면
     @RequestMapping("/modify/{no}")	
-	public String modify(@AuthUser UserVo authUser, @PathVariable("no") Long no, Model model) {
+	public String modify(
+		Authentication authentication, @PathVariable("no") Long no, Model model) {
     	BoardVo boardVo = boardService.getContents(no);
 		model.addAttribute("boardVo", boardVo);
 		return "board/modify";
@@ -83,11 +84,12 @@ public class BoardController {
     // 글 수정 처리
     @RequestMapping(value="/modify", method=RequestMethod.POST)    
     public String modify(
-    	@AuthUser UserVo authUser, BoardVo boardVo,
+    	Authentication authentication,
+    	@ModelAttribute BoardVo boardVo,
         @RequestParam(value="p", required=true, defaultValue="1") Integer page,
         @RequestParam(value="kwd", required=true, defaultValue="") String keyword) {
         
-    	boardVo.setWriter(authUser.getName()); 
+    	boardVo.setWriter(((UserVo)authentication.getPrincipal()).getName()); 
         boardService.modifyContents(boardVo);
         
         return "redirect:/board/view/" + boardVo.getNo() + 
@@ -98,12 +100,12 @@ public class BoardController {
     // 글 삭제
     @RequestMapping("/delete/{no}")
     public String delete(
-        @AuthUser UserVo authUser, 
+    	Authentication authentication, 
         @PathVariable("no") Long boardNo,
         @RequestParam(value="p", required=false, defaultValue="1") Integer page,
         @RequestParam(value="kwd", required=false, defaultValue="") String keyword) {
         
-    	boardService.deleteContents(boardNo, authUser.getName()); 
+    	boardService.deleteContents(boardNo, ((UserVo)authentication.getPrincipal()).getName()); 
         return "redirect:/board?p=" + page + "&kwd=" + keyword;
     }
     

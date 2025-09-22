@@ -1,6 +1,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt"%>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -49,14 +50,17 @@
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
 							<td>
-								<c:choose>
-					                <c:when test="${not empty authUser && authUser.id == vo.userId }">
-                                		<a href="${pageContext.request.contextPath }/board/delete/${vo.no}?p=${map.currentPage }&kwd=${map.keyword }" class="del" style="background-image:url(${pageContext.request.contextPath }/assets/images/recycle.png)">삭제</a>
-                                </c:when>
-					                <c:otherwise>
-					                    &nbsp;
-					                </c:otherwise>
-					            </c:choose>
+								<sec:authorize access="isAuthenticated()">
+									<sec:authentication property="principal" var="authUser"/> 
+									<c:choose>
+					                	<c:when test="${authUser.id == vo.userId}">
+                                			<a href="${pageContext.request.contextPath }/board/delete/${vo.no}?p=${map.currentPage }&kwd=${map.keyword }" class="del" style="background-image:url(${pageContext.request.contextPath }/assets/images/recycle.png)">삭제</a>
+                                		</c:when>
+					                	<c:otherwise>
+					                    	&nbsp;
+					                	</c:otherwise>
+					            	</c:choose>
+								</sec:authorize>
 							</td>
 						</tr>
 					</c:forEach>
@@ -86,9 +90,9 @@
 					</ul>
 				</div>				
 				<div class="bottom">
-					<c:if test="${not empty authUser }">
+					<sec:authorize access="isAuthenticated()">
 						<a href="${pageContext.request.contextPath }/board/write?p=${map.currentPage }&kwd=${map.keyword }" id="new-book">글쓰기</a>
-					</c:if>
+					</sec:authorize>
 				</div>
 			</div>
 		</div>
