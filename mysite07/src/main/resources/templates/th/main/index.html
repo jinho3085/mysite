@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -7,18 +7,18 @@
 </head>
 <body>
 	<div id="container">
-		<c:import url="/WEB-INF/views/includes/header.jsp" />
+		<th:block th:include="th/includes/header"></th:block>
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-					<img id="profile" th:src="@{(${servletContext.getAttribuete('siteVo').profileURL})}" style="width:150px">
-					<h2>[[${servletContext.getAttribuete('siteVo').welcomeMessage }]]</h2>
-					<p th:text='${#string.replace(servletContext.getAttribuete("siteVo").description, "\n", "<br>")}'></p>
+					<img id="profile" th:src="@{(${servletContext.getAttribute('siteVo').profileURL})}" style="width:150px">
+					<h2 th:text='${servletContext.getAttribute("siteVo").welcomeMessage }'></h2>
+					<p th:text='${#strings.replace(servletContext.getAttribute("siteVo").description, "\n", "<br>")}'></p>
 				</div>
 			</div>
 		</div>
-		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
-		<c:import url="/WEB-INF/views/includes/footer.jsp" />
+		<th:block th:include="th/includes/navigation"></th:block>
+		<th:block th:include="th/includes/footer"></th:block>
 	</div>
 </body>
 
