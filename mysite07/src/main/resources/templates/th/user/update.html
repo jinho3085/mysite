@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>mysite</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link th:href="@{/assets/css/user.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="container">
+		<th:block th:include="th/includes/header"></th:block>
+		<div id="content">
+			<div id="user">
+
+				<form id="join-form" name="joinForm" method="post" th:action="@{/user/update}" th:object="${userVo}">
+					
+					<label class="block-label" for="name">이름</label>
+					<input id="name" type="text" th:field="*{name}">
+
+					<label class="block-label" for="email">이메일</label>
+					<h4 th:text="*{email}"></h4>
+					
+					<label class="block-label">비밀번호</label>
+					<input type="password" th:field="*{password}">
+					
+					<fieldset>
+						<legend>성별</legend>
+						<label>
+			              <input type="radio" th:field="*{gender}" value="female"> 여
+			            </label>
+			            <label>
+			              <input type="radio" th:field="*{gender}" value="male"> 남
+			            </label>
+					</fieldset>
+					
+					<input type="submit" value="수정하기">
+				</form>
+			</div>
+		</div>
+		<th:block th:include="th/includes/navigation"></th:block>
+		<th:block th:include="th/includes/footer"></th:block>
+	</div>
+</body>
+
+</html>

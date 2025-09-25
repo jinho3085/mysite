@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>mysite</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link th:href="@{/assets/css/user.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="container">
+		<th:block th:include="th/includes/header"></th:block>
+		<div id="content">
+			<div id="user">
+				<form id="login-form" name="loginform" method="post" th:action="@{/user/auth}">
+					<label class="block-label" for="email">이메일</label>
+					<input id="email" name="email" type="text" value='${email}'>
+					
+					<label class="block-label">패스워드</label>
+					<input name="password" type="password" value="">
+						<p th:if="${#strings.isNotEmpty(email)}">
+							로그인이 실패 했습니다.
+						</p>
+					<input type="submit" value="로그인">
+				</form>
+			</div>
+		</div>
+		<th:block th:include="th/includes/navigation"></th:block>
+		<th:block th:include="th/includes/footer"></th:block>
+	</div>
+</body>
+
+</html>
