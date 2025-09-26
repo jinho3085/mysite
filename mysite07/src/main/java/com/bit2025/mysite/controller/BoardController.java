@@ -24,7 +24,7 @@ public class BoardController {
     private BoardService boardService;
     
     // 게시판 목록
-    @RequestMapping("")
+    @RequestMapping({"", "/"})
     public String list(
         @RequestParam(value="p", required=false, defaultValue="1") Integer page,
         @RequestParam(value="kwd", required=false, defaultValue="") String keyword,
@@ -33,7 +33,7 @@ public class BoardController {
         Map<String, Object> map = boardService.getContentsList(page, keyword);
         model.addAttribute("map", map);
         
-        return "board/list"; 
+        return "th/board/list"; 
     }
 
     // 게시글 보기
@@ -42,13 +42,13 @@ public class BoardController {
         @PathVariable("no") Long no, Model model) {
     	BoardVo boardVo = boardService.getContents(no);
         model.addAttribute("boardVo", boardVo);
-        return "board/view"; 
+        return "th/board/view"; 
     }
     
     // 글쓰기 화면
 	@RequestMapping(value="/write", method=RequestMethod.GET)
 	public String write() {
-		return "board/write";
+		return "th/board/write";
 	}
     
     // 글쓰기 처리
@@ -78,7 +78,7 @@ public class BoardController {
 		Authentication authentication, @PathVariable("no") Long no, Model model) {
     	BoardVo boardVo = boardService.getContents(no);
 		model.addAttribute("boardVo", boardVo);
-		return "board/modify";
+		return "th/board/modify";
 	}
     
     // 글 수정 처리
@@ -104,7 +104,6 @@ public class BoardController {
         @PathVariable("no") Long boardNo,
         @RequestParam(value="p", required=false, defaultValue="1") Integer page,
         @RequestParam(value="kwd", required=false, defaultValue="") String keyword) {
-        
     	boardService.deleteContents(boardNo, ((UserVo)authentication.getPrincipal()).getName()); 
         return "redirect:/board?p=" + page + "&kwd=" + keyword;
     }
@@ -119,7 +118,7 @@ public class BoardController {
         reply.setDepth(parent.getDepth() + 1);   
 		
 		model.addAttribute("boardVo", reply);
-		return "board/reply";
+		return "th/board/reply";
 	}
     
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>mysite</title>
+<title th:text="${@site.title}"></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link th:href="@{/assets/css/user.css}" rel="stylesheet" type="text/css">
 </head>
@@ -10,28 +10,21 @@
 		<th:block th:include="th/includes/header"></th:block>
 		<div id="content">
 			<div id="user">
-
-				<form id="join-form" name="joinForm" method="post" th:action="@{/user/update}" th:object="${userVo}">
+				<form id="join-form" name="joinForm" method="post" th:object="${userVo}" th:action="@{/user/update}">
+					<label class="block-label" for="name" th:text="#{user.join.label.name}"></label>
+					<input type="text" id="name" th:field="*{name}">
 					
-					<label class="block-label" for="name">이름</label>
-					<input id="name" type="text" th:field="*{name}">
-
-					<label class="block-label" for="email">이메일</label>
+					<label class="block-label" for="email" th:text="#{user.join.label.email}"></label>
 					<h4 th:text="*{email}"></h4>
 					
-					<label class="block-label">비밀번호</label>
-					<input type="password" th:field="*{password}">
+					<label class="block-label" th:text="#{user.join.label.password}"></label>
+					<input type="password" name="password" value="">
 					
 					<fieldset>
-						<legend>성별</legend>
-						<label>
-			              <input type="radio" th:field="*{gender}" value="female"> 여
-			            </label>
-			            <label>
-			              <input type="radio" th:field="*{gender}" value="male"> 남
-			            </label>
+						<legend th:text="#{user.join.label.gender}"></legend>
+						<label th:text="#{user.join.label.gender.female}"></label> <input type="radio" name="gender" value="female" th:checked="*{gender == 'female'}">
+						<label th:text="#{user.join.label.gender.male}"></label> <input type="radio" name="gender" value="male" th:checked="*{gender == 'male'}">						
 					</fieldset>
-					
 					<input type="submit" value="수정하기">
 				</form>
 			</div>
@@ -40,5 +33,4 @@
 		<th:block th:include="th/includes/footer"></th:block>
 	</div>
 </body>
-
 </html>

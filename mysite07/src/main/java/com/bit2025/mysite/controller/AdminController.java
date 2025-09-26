@@ -3,6 +3,7 @@ package com.bit2025.mysite.controller;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +30,9 @@ public class AdminController {
 	}
 	
 	@RequestMapping({"", "/"})
-	public String main() {
-		return "admin/main";
+	public String main(Model model) {
+		model.addAttribute("siteVo", servletContext.getAttribute("siteVo"));
+		return "th/admin/main";
 	}
 
 	@RequestMapping("/main/update")
@@ -54,17 +56,17 @@ public class AdminController {
 	
 	@RequestMapping("/guestbook")
 	public String guestbook() {
-		return "admin/guestbook";
+		return "th/admin/guestbook";
 	}
 	
 	@RequestMapping("/board")
 	public String board() {
-		return "admin/board";
+		return "th/admin/board";
 	}
 
 	@RequestMapping("/user")
 	public String user() {
-		return "admin/user";
+		return "th/admin/user";
 	}
 	
 }

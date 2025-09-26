@@ -8,6 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.bit2025.mysite.dto.JsonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +39,8 @@ public class GlobalExceptionHandler {
 		
 		//3. json 응답
 		if(accept.matches(".*application/json.*")) {
-			String jsonString = new ObjectMapper().writeValueAsString(JsonResult.fail(errors.toString()));
+			JsonResult jsonResult = JsonResult.fail(e instanceof NoHandlerFoundException ? "Unknown API URL" : errors.toString());
+			String jsonString = new ObjectMapper().writeValueAsString(jsonResult);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json; charset=utf-8");
@@ -48,11 +51,17 @@ public class GlobalExceptionHandler {
 			
 			return;
 		}
-		
-		//4. HTML 응답: 사과 페이지 (종료)
-		request.setAttribute("errors", errors);
-		request
-			.getRequestDispatcher("/WEB-INF/views/errors/exception.jsp")
-			.forward(request, response);
+
+		//4. HTML 응답 (종료)
+		if(e instanceof NoHandlerFoundException || e instanceof NoResourceFoundException) { // 404 에러 페이지
+			request
+				.getRequestDispatcher("/error/404")
+				.forward(request, response);
+		} else { // 500 에러 페이지
+			request.setAttribute("errors", errors);
+			request
+				.getRequestDispatcher("/error/500")
+				.forward(request, response);
+		}
 	}
 }

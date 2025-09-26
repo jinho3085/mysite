@@ -4,12 +4,9 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 import com.bit2025.mysite.event.ApplicationContextEventListener;
 import com.bit2025.mysite.interceptor.SiteInterceptor;
@@ -27,17 +24,16 @@ public class MvcConfig implements WebMvcConfigurer{
 		}
 		
 		// View Resolvers
-		@Bean
-		public ViewResolver viewResolver() {
-			InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-			viewResolver.setViewClass(JstlView.class);
-			viewResolver.setPrefix("/WEB-INF/views/");
-			viewResolver.setSuffix(".jsp");
-			viewResolver.setExposeContextBeansAsAttributes(true);
-			viewResolver.setExposedContextBeanNames("site");
-			
-			return viewResolver;
-		}
+//		@Bean
+//		public ViewResolver viewResolver() {
+//			InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//			viewResolver.setViewClass(JstlView.class);
+//			viewResolver.setPrefix("/WEB-INF/views/");
+//			viewResolver.setSuffix(".jsp");
+//			viewResolver.setExposeContextBeansAsAttributes(true);
+//			viewResolver.setExposedContextBeanNames("site");
+//			return viewResolver;
+//		}
 	
 		// Application Context Event Listener
 		@Bean
